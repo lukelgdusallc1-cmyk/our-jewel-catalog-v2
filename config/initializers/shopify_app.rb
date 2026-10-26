@@ -57,6 +57,6 @@ Rails.application.config.after_initialize do
       user_agent_prefix: "ShopifyApp/#{ShopifyApp::VERSION}"
     )
 
-    ShopifyApp::WebhooksManager.add_registrations
+    # ShopifyApp::WebhooksManager.add_registrations
   end
 end
