@@ -1,0 +1,48 @@
+
+<article class="product-card">
+  <div class="photo">
+    <% photos = ProductContent::PhotoBuilder.new(
+      settings: CatalogSetting.current
+    ).call(product) %>
+
+    <% if photos.any? %>
+      <%= image_tag photos.first,
+          alt: product.display_name,
+          loading: "lazy",
+          style: "width:100%; height:220px; object-fit:contain;" %>
+    <% else %>
+      <span>✧<small>No photo</small></span>
+    <% end %>
+    <% if @sample_skus.include?(product.stock_no.to_s.upcase) %>
+      <span class="status in-store">
+        IN STORE (SAMPLE)
+      </span>
+    <% else %>
+      <span class="status">
+        NOT IN STORE (SAMPLE)
+      </span>
+    <% end %>
+  </div>
+
+  <div class="product-info">
+    <small class="muted">
+      <%= product.category.presence || "Jewelry" %>
+      ·
+      <%= product.stock_no %>
+    </small>
+
+    <strong>
+      <%= link_to product.display_name, catalog_path(product) %>
+    </strong>
+
+    <p>
+      Supplier:
+      <%= product.supplier_price ? number_to_currency(product.supplier_price) : "N/A" %>
+      · Stock: <%= product.inhand_pcs %>
+    </p>
+
+    <% if product.demo? %>
+      <span class="pill">DEMO DATA</span>
+    <% end %>
+  </div>
+</article>

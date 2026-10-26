@@ -1,0 +1,3 @@
+<h1>History</h1><p class="muted">Local changes only; no Shopify synchronization has run.</p>
+<table><thead><tr><th>Time</th><th>Action</th><th>Status</th><th>Details</th></tr></thead>
+<tbody><% @events.each do |event| %><tr><td><%= l(event.created_at, format: :short) %></td><td><%= event.event_type %></td><td><%= event.status %></td><td><%= event.message %></td></tr><% end %></tbody></table>

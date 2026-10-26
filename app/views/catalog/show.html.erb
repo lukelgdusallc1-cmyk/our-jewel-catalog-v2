@@ -1,0 +1,10 @@
+<p><%= link_to '← Catalog', root_path %></p><h1><%= @product.display_name %></h1>
+<p><strong>SKU:</strong> <%= @product.stock_no %> · <strong>Category:</strong> <%= @product.category %></p>
+<h2>Local Push Preview — no Shopify changes</h2>
+<table><tr><th>Shopify field</th><th>Preview</th></tr>
+  <tr><td>Title</td><td><%= @preview[:title] %></td></tr>
+  <tr><td>Vendor</td><td><%= @preview[:vendor] %></td></tr>
+  <tr><td>Sell price</td><td><%= @preview[:price] ? number_to_currency(@preview[:price]) : 'N/A' %></td></tr>
+  <tr><td>Stock</td><td><%= @preview[:inventory] %></td></tr>
+  <tr><td>Photo URLs</td><td><%= @preview[:photos].length %> proposed</td></tr>
+</table>

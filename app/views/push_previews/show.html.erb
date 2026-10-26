@@ -1,0 +1,5 @@
+<h1>Push Preview</h1><p class="muted">Read-only preview of up to 50 products. Nothing is published to Shopify.</p>
+<table><thead><tr><th>SKU</th><th>Proposed title</th><th>Vendor</th><th>Proposed price</th><th>Inventory</th><th>Images</th></tr></thead>
+<tbody><% @previews.each do |preview| %><tr>
+<td><%= preview[:stock_no] %><%= ' (DEMO)' if preview[:demo] %></td><td><%= preview[:title] %></td><td><%= preview[:vendor] %></td><td><%= preview[:price] ? number_to_currency(preview[:price]) : 'N/A' %></td><td><%= preview[:inventory] %></td><td><%= preview[:photos].length %></td>
+</tr><% end %></tbody></table>

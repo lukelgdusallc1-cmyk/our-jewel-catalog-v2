@@ -1,0 +1,14 @@
+<h1>LGD USA Supplier Fetch</h1>
+<div class="panel">
+  <p>Import real jewelry products from LGD USA into the local catalog. Shopify is not contacted.</p>
+  <p><strong>Minimum interval:</strong> 15 minutes between attempts, including unsuccessful requests.</p>
+  <p><strong>Last attempt:</strong> <%= @state.last_attempt_at ? l(@state.last_attempt_at) : "Never" %></p>
+  <p><strong>Next allowed:</strong> <%= @state.eligible_at ? l(@state.eligible_at) : "Now" %></p>
+  <p><strong>Catalog products:</strong> <%= SupplierProduct.count %></p>
+  <% if Rails.env.development? && @state.can_fetch? %>
+    <%= button_to "Fetch LGD USA Products", supplier_fetches_path, method: :post, data: { turbo_confirm: "Make one supplier API request now? The next request will be blocked for 15 minutes." } %>
+  <% else %>
+    <p>Fetch is unavailable until the cooldown expires or local development is active.</p>
+  <% end %>
+  <p class="muted">Only page 1 is requested. Do not click repeatedly. Confirm the number of products before implementing pagination.</p>
+</div>

@@ -1,0 +1,35 @@
+<h1>Settings</h1><p class="muted">Saved locally. No changes will be sent to Shopify.</p>
+<%= form_with model: @settings, url: settings_path, method: :patch do |f| %>
+  <% if @settings.errors.any? %><div class="flash warning"><%= @settings.errors.full_messages.to_sentence %></div><% end %>
+  <section class="panel"><h2>Supplier connection</h2>
+    <p class="muted">LGD USA credentials belong in server environment variables, not this form.</p>
+    <div class="field"><%= f.label :vendor_name %><%= f.text_field :vendor_name %></div>
+  </section>
+  <section class="panel"><h2>Pricing rules</h2>
+    <div class="field"><%= f.label :default_markup, 'Default markup (%)' %><%= f.number_field :default_markup, step: '0.01', min: 0 %></div>
+    <h3>Category markups (%)</h3>
+    <div class="two-col">
+      <% %w[Rings Earrings Necklaces Bracelets Pendants].each do |cat| %>
+        <div class="field"><%= label_tag "markup_#{cat}", cat %><%= number_field_tag "catalog_setting[category_markups][#{cat}]", @settings.category_markups[cat], step: '0.01', min: 0, id: "markup_#{cat}" %></div>
+      <% end %>
+    </div>
+  </section>
+  <section class="panel"><h2>Product title</h2>
+    <p class="muted">Available placeholders: {remarks}, {category}, {metal}, {stockNo}, {title}</p>
+    <div class="field"><%= f.label :title_template %><%= f.text_field :title_template %></div>
+  </section>
+  <section class="panel"><h2>Product photos</h2>
+    <p class="muted">Use HTTPS photo URLs with {stockNo} and {n}. Images are not uploaded in local mode.</p>
+    <div class="field"><%= f.label :photo_url_pattern %><%= f.text_field :photo_url_pattern %></div>
+    <div class="field"><%= f.label :photos_per_product %><%= f.number_field :photos_per_product, min: 0, max: 20 %></div>
+  </section>
+  <section class="panel"><h2>Inventory location</h2>
+    <p class="muted">Label only; connect a real Shopify location ID after authorization.</p>
+    <div class="field"><%= f.label :inventory_location_label %><%= f.text_field :inventory_location_label %></div>
+  </section>
+  <section class="panel"><h2>Shopify matching (local sample only)</h2>
+    <div class="field"><%= f.label :sample_shopify_skus, 'Sample Shopify SKUs (comma or newline separated)' %><%= f.text_area :sample_shopify_skus, rows: 3 %></div>
+    <p><strong>Auto-sync: OFF</strong> — disabled until real Shopify integration is verified.</p>
+  </section>
+  <%= f.submit 'Save local settings', class: 'button' %>
+<% end %>

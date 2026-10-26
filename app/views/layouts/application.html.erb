@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Our Jewel Catalog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+  <%= javascript_importmap_tags %>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">✦ Our Jewel Catalog</div>
+      <%= link_to 'Catalog', root_path %>
+      <%= link_to 'Fetch', supplier_fetches_path %>
+      <%= link_to 'Settings', edit_settings_path %>
+      <%= link_to 'History', histories_path %>
+      <%= link_to 'Push Preview', push_preview_path %>
+      <p class="muted small">LOCAL DEVELOPMENT</p>
+    </aside>
+    <main class="main">
+      <% if notice.present? %><div class="flash"><%= notice %></div><% end %>
+      <% if alert.present? %><div class="flash warning"><%= alert %></div><% end %>
+      <%= yield %>
+    </main>
+  </div>
+</body>
+</html>

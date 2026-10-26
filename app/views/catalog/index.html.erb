@@ -1,0 +1,35 @@
+
+<div class="heading">
+  <div>
+    <h1>Catalog</h1>
+    <p class="muted">
+      <%= @count %> supplier products · Shopify SKU matching: SAMPLE ONLY
+    </p>
+  </div>
+  <span class="pill">Local preview</span>
+</div>
+
+<nav class="tabs">
+  <%= link_to 'All', root_path, class: params[:category].blank? ? 'active' : '' %>
+  <% @categories.each do |category| %>
+    <%= link_to category, root_path(category: category),
+        class: params[:category] == category ? 'active' : '' %>
+  <% end %>
+</nav>
+
+<%= form_with url: root_path, method: :get, class: 'filters' do |f| %>
+  <%= f.text_field :q, value: params[:q],
+      placeholder: 'Search SKU, name or remarks…' %>
+  <%= f.hidden_field :category, value: params[:category] if params[:category].present? %>
+  <%= f.submit 'Search', class: 'button' %>
+<% end %>
+
+<div class="grid">
+  <% @products.each do |product| %>
+    <%= render 'product_card', product: product %>
+  <% end %>
+</div>
+
+<% if @products.empty? %>
+  <p>No supplier products found.</p>
+<% end %>
