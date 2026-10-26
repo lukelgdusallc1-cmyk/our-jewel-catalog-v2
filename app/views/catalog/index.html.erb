@@ -6,30 +6,139 @@
       <%= @count %> supplier products · Shopify SKU matching: SAMPLE ONLY
     </p>
   </div>
+
   <span class="pill">Local preview</span>
 </div>
 
+<!-- CATEGORY TABS -->
 <nav class="tabs">
-  <%= link_to 'All', root_path, class: params[:category].blank? ? 'active' : '' %>
+  <%= link_to "All", root_path,
+      class: params[:category].blank? ? "active" : "" %>
+
   <% @categories.each do |category| %>
-    <%= link_to category, root_path(category: category),
-        class: params[:category] == category ? 'active' : '' %>
+    <%= link_to category,
+        root_path(category: category),
+        class: params[:category] == category ? "active" : "" %>
   <% end %>
 </nav>
 
-<%= form_with url: root_path, method: :get, class: 'filters' do |f| %>
-  <%= f.text_field :q, value: params[:q],
-      placeholder: 'Search SKU, name or remarks…' %>
-  <%= f.hidden_field :category, value: params[:category] if params[:category].present? %>
-  <%= f.submit 'Search', class: 'button' %>
+<!-- FILTERS -->
+<%= form_with url: root_path,
+              method: :get,
+              class: "catalog-filter-form" do |f| %>
+
+  <% if params[:category].present? %>
+    <%= f.hidden_field :category, value: params[:category] %>
+  <% end %>
+
+  <div class="filter-fields">
+
+    <% if @metals.present? %>
+      <div>
+        <%= f.label :metal, "Metal" %>
+        <%= f.select :metal,
+            options_for_select(
+              [["All Metals", ""]] + @metals.map { |v| [v, v] },
+              params[:metal]
+            ) %>
+      </div>
+    <% end %>
+
+    
+  <% if false %>
+    <% %w[shape style weight clarity size].each do |field| %>
+      <% options = (@advanced_filters || {})[field] %>
+
+      <div>
+        <%= label_tag field, field.titleize %>
+
+        <% if options.present? %>
+          <%= select_tag field,
+              options_for_select(
+                [["All #{field.titleize}", ""]] +
+                  options.map { |v| [v, v] },
+                params[field]
+              ) %>
+        <% else %>
+          <%= select_tag field,
+              options_for_select(
+                [["Not available in supplier data", ""]]
+              ),
+              disabled: true %>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+
+    <div>
+      <%= f.label :q, "Search" %>
+      <%= f.text_field :q,
+          value: params[:q],
+          placeholder: "Search SKU, name or remarks..." %>
+    </div>
+    <%if false%>
+      <div>
+        <%= f.label :sort, "Sort" %>
+        <%= f.select :sort,
+            options_for_select([
+              ["Newest", "newest"],
+              ["Oldest", "oldest"],
+              ["Price: Low to High", "price_asc"],
+              ["Price: High to Low", "price_desc"]
+            ], params[:sort]) %>
+      </div>
+    <% end %>
+
+  </div>
+
+  <div class="filter-actions">
+    <strong><%= @count %> items</strong>
+    <%= link_to "Clear", root_path %>
+    <%= f.submit "Apply", class: "button" %>
+  </div>
 <% end %>
 
-<div class="grid">
-  <% @products.each do |product| %>
-    <%= render 'product_card', product: product %>
-  <% end %>
-</div>
+<!-- PRODUCT SELECTION + SINGLE PRODUCT GRID -->
+<%= form_with url: push_preview_path, method: :get do %>
 
-<% if @products.empty? %>
-  <p>No supplier products found.</p>
+  <div class="catalog-selection-toolbar">
+    <strong>Select jewelry products</strong>
+
+    <%= submit_tag "Preview Selected Products",
+        name: nil,
+        class: "button" %>
+  </div>
+
+  <div class="grid">
+    <% @products.each do |product| %>
+      <div class="catalog-selectable-product">
+
+        <label class="product-select-label">
+          <%= check_box_tag "skus[]",
+              product.stock_no,
+              false,
+              class: "product-checkbox" %>
+
+          Select for preview
+        </label>
+
+        <%= render "product_card", product: product %>
+
+      </div>
+    <% end %>
+  </div>
+
+  <% if @products.empty? %>
+    <p>No supplier products match your filters.</p>
+  <% end %>
+
+  <div class="catalog-selection-toolbar">
+    <span class="muted">Nothing is published to Shopify.</span>
+
+    <%= submit_tag "Preview Selected Products",
+        name: nil,
+        class: "button" %>
+  </div>
+
 <% end %>

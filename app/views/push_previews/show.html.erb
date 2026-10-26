@@ -1,5 +1,86 @@
-<h1>Push Preview</h1><p class="muted">Read-only preview of up to 50 products. Nothing is published to Shopify.</p>
-<table><thead><tr><th>SKU</th><th>Proposed title</th><th>Vendor</th><th>Proposed price</th><th>Inventory</th><th>Images</th></tr></thead>
-<tbody><% @previews.each do |preview| %><tr>
-<td><%= preview[:stock_no] %><%= ' (DEMO)' if preview[:demo] %></td><td><%= preview[:title] %></td><td><%= preview[:vendor] %></td><td><%= preview[:price] ? number_to_currency(preview[:price]) : 'N/A' %></td><td><%= preview[:inventory] %></td><td><%= preview[:photos].length %></td>
-</tr><% end %></tbody></table>
+
+<div class="heading">
+  <div>
+    <h1>Push Preview</h1>
+    <p class="muted">
+      Review proposed Shopify product information.
+      Nothing is published.
+    </p>
+  </div>
+  <span class="pill">READ ONLY</span>
+</div>
+
+<p>
+  <%= @selected_skus.any? ? "Selected products" : "All products" %>:
+  <strong><%= @previews.length %></strong>
+</p>
+
+<p class="muted">
+  Shopify prices and live SKU matching will be available
+  after Shopify integration.
+</p>
+
+<div style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr>
+        <th>SKU</th>
+        <th>Product</th>
+        <th>Supplier Price</th>
+        <th>Shopify Price</th>
+        <th>Proposed Price</th>
+        <th>Inventory</th>
+        <th>Photos</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @previews.each do |item| %>
+        <% product = item[:product] %>
+        <% preview = item[:preview] %>
+
+        <tr>
+          <td><%= product.stock_no %></td>
+
+          <td>
+            <strong><%= preview[:title] %></strong>
+            <br>
+            <small class="muted">
+              <%= preview[:vendor] %>
+            </small>
+          </td>
+
+          <td>
+            <%= product.supplier_price ?
+                number_to_currency(product.supplier_price) :
+                "N/A" %>
+          </td>
+
+          <td>
+            <span class="muted">Not connected</span>
+          </td>
+
+          <td>
+            <strong>
+              <%= preview[:price] ?
+                  number_to_currency(preview[:price]) :
+                  "N/A" %>
+            </strong>
+          </td>
+
+          <td><%= preview[:inventory] %></td>
+
+          <td><%= preview[:photos].length %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<% if @previews.empty? %>
+  <p>No matching products found.</p>
+<% end %>
+
+<p>
+  <%= link_to "Back to Catalog", root_path, class: "button" %>
+</p>
