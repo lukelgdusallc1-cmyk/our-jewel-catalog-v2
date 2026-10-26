@@ -15,5 +15,5 @@ Rails.application.routes.draw do
       as: :push_preview
 
   # Shopify authentication will be enabled after configuration.
-  # mount ShopifyApp::Engine, at: "/"
+  mount ShopifyApp::Engine, at: "/"
 end
