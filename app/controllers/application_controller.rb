@@ -11,6 +11,7 @@
 
 
 class ApplicationController < ActionController::Base
+  layout "embedded_app"
   if Rails.env.production?
     include ShopifyApp::EnsureHasSession
 
