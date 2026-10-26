@@ -27,3 +27,10 @@
 #   # Report violations without enforcing the policy.
 #   # config.content_security_policy_report_only = true
 # end
+# Allow Our Jewel Catalog V2 to be embedded in Theia Jewels Shopify Admin.
+Rails.application.config.content_security_policy do |policy|
+  policy.frame_ancestors(
+    "https://admin.shopify.com",
+    "https://theiajewels-store.myshopify.com"
+  )
+end
