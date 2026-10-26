@@ -66,3 +66,5 @@ group :test do
 end
 
 gem "dotenv-rails", "~> 3.2"
+
+gem "shopify_app", "~> 23.0"

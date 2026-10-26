@@ -1,4 +1,3 @@
-
 Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
@@ -14,4 +13,7 @@ Rails.application.routes.draw do
 
   get "push_preview", to: "push_previews#show",
       as: :push_preview
+
+  # Shopify authentication will be enabled after configuration.
+  # mount ShopifyApp::Engine, at: "/"
 end
