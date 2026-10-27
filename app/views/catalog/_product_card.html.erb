@@ -13,14 +13,18 @@
     <% else %>
       <span>✧<small>No photo</small></span>
     <% end %>
-    <% if @sample_skus.include?(product.stock_no.to_s.upcase) %>
-      <span class="status in-store">
-        IN STORE (SAMPLE)
-      </span>
+    <% if Rails.env.production? %>
+      <% if @shopify_skus.nil? %>
+        <span class="status">STATUS UNAVAILABLE</span>
+      <% elsif @shopify_skus.include?(product.stock_no.to_s.strip.upcase) %>
+        <span class="status in-store">IN STORE</span>
+      <% else %>
+        <span class="status">NOT IN STORE</span>
+      <% end %>
+    <% elsif @sample_skus.include?(product.stock_no.to_s.upcase) %>
+      <span class="status in-store">IN STORE (SAMPLE)</span>
     <% else %>
-      <span class="status">
-        NOT IN STORE (SAMPLE)
-      </span>
+      <span class="status">NOT IN STORE (SAMPLE)</span>
     <% end %>
   </div>
 
