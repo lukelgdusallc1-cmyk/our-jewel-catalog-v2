@@ -7,8 +7,21 @@
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
   <%= javascript_importmap_tags %>
+  <% if Rails.env.production? %>
+    <meta name="shopify-api-key" content="<%= ShopifyApp.configuration.api_key %>">
+    <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
+  <% end %>
 </head>
 <body>
+  <% if Rails.env.production? %>
+    <s-app-nav>
+      <s-link href="/">Catalog</s-link>
+      <s-link href="/supplier_fetches">Fetch</s-link>
+      <s-link href="/settings/edit">Settings</s-link>
+      <s-link href="/histories">History</s-link>
+      <s-link href="/push_preview">Push Preview</s-link>
+    </s-app-nav>
+  <% end %>
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">✦ Our Jewel Catalog</div>
