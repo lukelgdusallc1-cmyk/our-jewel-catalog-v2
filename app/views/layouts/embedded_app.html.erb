@@ -1,23 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <meta name="shopify-api-key" content="<%= ShopifyApp.configuration.api_key %>">
     <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
-    <% application_name = ShopifyApp.configuration.application_name %>
-    <title><%= application_name %></title>
-    <%= stylesheet_link_tag 'application' %>
-    <% if ShopifyApp.use_webpacker? %>
-      <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <% elsif ShopifyApp.use_importmap? %>
-      <%= javascript_importmap_tags %>
-    <% else %>
-      <%= javascript_include_tag 'application', "data-turbolinks-track" => true %>
-    <% end %>
+
+    <title>Our Jewel Catalog V2</title>
+
     <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
+    <%= javascript_importmap_tags %>
   </head>
 
   <body>
+
+    <%# Shopify Admin sidebar navigation %>
+    <s-app-nav>
+      <s-link href="<%= root_path %>" rel="home">Catalog</s-link>
+      <s-link href="<%= supplier_fetches_path %>">Fetch</s-link>
+      <s-link href="<%= edit_settings_path %>">Settings</s-link>
+      <s-link href="<%= histories_path %>">History</s-link>
+      <s-link href="<%= push_preview_path %>">Push Preview</s-link>
+    </s-app-nav>
+
     <div class="app-wrapper">
       <div class="app-content">
         <main role="main">
@@ -28,12 +37,11 @@
 
     <%= render 'layouts/flash_messages' %>
 
-
-
     <% if content_for?(:javascript) %>
       <div id="ContentForJavascript" data-turbolinks-temporary>
         <%= yield :javascript %>
       </div>
     <% end %>
+
   </body>
 </html>
