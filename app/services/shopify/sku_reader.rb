@@ -1,6 +1,10 @@
 
+require "set"
+
 module Shopify
   class SkuReader
+    CACHE_DURATION = 5.minutes
+
     QUERY = <<~GRAPHQL
       query($cursor: String) {
         productVariants(first: 250, after: $cursor) {
@@ -18,6 +22,14 @@ module Shopify
     def self.call(session:)
       raise ArgumentError, "Shopify session missing" if session.nil?
 
+      cache_key = "shopify/variant_skus/#{session.shop}"
+
+      Rails.cache.fetch(cache_key, expires_in: CACHE_DURATION) do
+        fetch_skus(session: session).to_a
+      end.to_set
+    end
+
+    def self.fetch_skus(session:)
       client = ShopifyAPI::Clients::Graphql::Admin.new(
         session: session
       )
@@ -49,5 +61,7 @@ module Shopify
 
       skus
     end
+
+    private_class_method :fetch_skus
   end
 end
