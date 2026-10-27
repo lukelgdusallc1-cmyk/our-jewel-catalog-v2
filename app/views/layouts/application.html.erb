@@ -1,40 +1,56 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Our Jewel Catalog</title>
+  <title>Our Jewel Catalog V2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
   <%= stylesheet_link_tag 'application', 'data-turbo-track': 'reload' %>
   <%= javascript_importmap_tags %>
+
   <% if Rails.env.production? %>
     <meta name="shopify-api-key" content="<%= ShopifyApp.configuration.api_key %>">
     <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
   <% end %>
 </head>
+
 <body>
   <% if Rails.env.production? %>
     <s-app-nav>
-      <s-link href="/">Catalog</s-link>
-      <s-link href="/supplier_fetches">Fetch</s-link>
-      <s-link href="/settings/edit">Settings</s-link>
-      <s-link href="/histories">History</s-link>
-      <s-link href="/push_preview">Push Preview</s-link>
+      <s-link href="<%= root_path %>" rel="home">Catalog</s-link>
+      <s-link href="<%= supplier_fetches_path %>">Fetch</s-link>
+      <s-link href="<%= edit_settings_path %>">Settings</s-link>
+      <s-link href="<%= histories_path %>">History</s-link>
+      <s-link href="<%= push_preview_path %>">Push Preview</s-link>
     </s-app-nav>
   <% end %>
+
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">✦ Our Jewel Catalog</div>
+
       <%= link_to 'Catalog', root_path %>
       <%= link_to 'Fetch', supplier_fetches_path %>
       <%= link_to 'Settings', edit_settings_path %>
       <%= link_to 'History', histories_path %>
       <%= link_to 'Push Preview', push_preview_path %>
-      <p class="muted small">LOCAL DEVELOPMENT</p>
+
+      <% if Rails.env.development? %>
+        <p class="muted small">LOCAL DEVELOPMENT</p>
+      <% end %>
     </aside>
+
     <main class="main">
-      <% if notice.present? %><div class="flash"><%= notice %></div><% end %>
-      <% if alert.present? %><div class="flash warning"><%= alert %></div><% end %>
+      <% if notice.present? %>
+        <div class="flash"><%= notice %></div>
+      <% end %>
+
+      <% if alert.present? %>
+        <div class="flash warning"><%= alert %></div>
+      <% end %>
+
       <%= yield %>
     </main>
   </div>
