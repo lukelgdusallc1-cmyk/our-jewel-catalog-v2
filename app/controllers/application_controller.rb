@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
     allowed_shops = %w[
       0kq9px-fe.myshopify.com
       theiajewels-store.myshopify.com
+      thia-jwel-testing.myshopify.com
     ]
 
     head :forbidden unless allowed_shops.include?(current_shopify_session&.shop)

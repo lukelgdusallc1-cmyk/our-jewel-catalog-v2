@@ -31,6 +31,7 @@
 Rails.application.config.content_security_policy do |policy|
   policy.frame_ancestors(
     "https://admin.shopify.com",
-    "https://theiajewels-store.myshopify.com"
+    "https://theiajewels-store.myshopify.com",
+    "https://thia-jwel-testing.myshopify.com"
   )
 end
