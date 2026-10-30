@@ -143,8 +143,9 @@ class PushPreviewsController < ApplicationController
   end
 
   def shop_identity
-    shop = session[:shopify_shop] || params[:shop]
+    return "local-development" unless Rails.env.production?
 
-    shop.presence || "local-development"
+    current_shopify_session&.shop ||
+      ShopifyAPI::Context.active_session&.shop
   end
 end
