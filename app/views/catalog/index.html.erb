@@ -100,7 +100,9 @@
 <% end %>
 
 <!-- PRODUCT SELECTION + SINGLE PRODUCT GRID -->
-<%= form_with url: push_preview_path, method: :get do %>
+<%= form_with url: push_preview_path,
+              method: :get,
+              data: { controller: "select-all" } do %>
 
   <div class="catalog-selection-toolbar">
     <strong>Select jewelry products</strong>
@@ -108,6 +110,21 @@
     <%= submit_tag "Preview Selected Products",
         name: nil,
         class: "button" %>
+  </div>
+
+  <div class="bulk-selection">
+    <label>
+      <input type="checkbox"
+            id="select-all-products"
+            data-select-all-target="all"
+            data-action="change->select-all#toggleAll">
+
+      <strong>Select All Products</strong>
+    </label>
+
+    <span data-select-all-target="count">
+      0 products selected
+    </span>
   </div>
 
   <div class="grid">
@@ -118,7 +135,11 @@
           <%= check_box_tag "skus[]",
               product.stock_no,
               false,
-              class: "product-checkbox" %>
+              class: "product-checkbox",
+              data: {
+                select_all_target: "product",
+                action: "change->select-all#updateCount"
+              } %>      
 
           Select for preview
         </label>
