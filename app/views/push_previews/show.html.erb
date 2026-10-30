@@ -18,12 +18,13 @@
 
 <% if @previews.any? %>
 
-  <%= form_with url: publish_products_path,
-                method: :post,
-                data: {
-                  turbo: false,
-                  controller: "push-confirm"
-                } do %>
+  <%= form_tag publish_products_path,
+              method: :post,
+              data: {
+                turbo: false,
+                controller: "push-confirm",
+                action: "submit->push-confirm#submit"
+              } do %>
 
     <%= hidden_field_tag :preview_token, @preview_token %>
 
@@ -109,9 +110,10 @@
       </p>
 
       <label style="display:block; margin-bottom:16px;">
-        <input type="checkbox"
-               id="confirm-shopify-push"
-               required>
+          <input type="checkbox"
+                id="confirm-shopify-push"
+                data-push-confirm-target="confirmation"
+                required>
 
         I have reviewed the product details and
         authorize sending these products to Shopify.
