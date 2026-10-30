@@ -1,5 +1,5 @@
 class PushPreviewsController < ApplicationController
-  MAX_PRODUCTS = 50
+  MAX_PRODUCTS = 200
 
   def show
     @selected_skus = normalize_skus(params[:skus])
@@ -135,7 +135,7 @@ class PushPreviewsController < ApplicationController
       .map(&:strip)
       .reject(&:blank?)
       .uniq
-      .first(251)
+      .first(MAX_PRODUCTS)
   end
 
   def verifier
