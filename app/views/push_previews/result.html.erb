@@ -1,0 +1,81 @@
+<div class="heading">
+  <div>
+    <h1>Shopify Push Results</h1>
+    <p class="muted">
+      Supplier product publishing results.
+    </p>
+  </div>
+</div>
+
+<div style="display:flex;gap:20px;flex-wrap:wrap;margin:24px 0;">
+
+  <div>
+    <strong>Created</strong>
+    <h2><%= @created %></h2>
+  </div>
+
+  <div>
+    <strong>Skipped</strong>
+    <h2><%= @skipped %></h2>
+  </div>
+
+  <div>
+    <strong>Failed</strong>
+    <h2><%= @failed %></h2>
+  </div>
+
+</div>
+
+<div style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr>
+        <th>SKU</th>
+        <th>Status</th>
+        <th>Message</th>
+        <th>Shopify Product ID</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @results.each do |result| %>
+        <tr>
+          <td>
+            <strong><%= result[:sku] %></strong>
+          </td>
+
+          <td>
+            <% case result[:status] %>
+            <% when "created" %>
+              <span style="color:green;font-weight:bold;">
+                Created
+              </span>
+            <% when "skipped" %>
+              <span style="color:orange;font-weight:bold;">
+                Skipped
+              </span>
+            <% else %>
+              <span style="color:red;font-weight:bold;">
+                Failed
+              </span>
+            <% end %>
+          </td>
+
+          <td>
+            <%= result[:message] %>
+          </td>
+
+          <td>
+            <%= result[:product_id] || "-" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top:24px;">
+  <%= link_to "Back to Catalog",
+        root_path,
+        class: "button" %>
+</div>

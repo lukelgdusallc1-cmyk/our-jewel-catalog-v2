@@ -4,16 +4,15 @@ Rails.application.routes.draw do
   root "catalog#index"
 
   resources :catalog, only: [:show]
-
   resources :supplier_fetches, only: [:index, :create]
-
   resource :settings, only: [:edit, :update]
-
   resources :histories, only: [:index]
 
   get "push_preview", to: "push_previews#show",
       as: :push_preview
 
-  # Shopify authentication will be enabled after configuration.
+  post "push_preview/publish", to: "push_previews#publish",
+      as: :publish_products
+
   mount ShopifyApp::Engine, at: "/"
 end

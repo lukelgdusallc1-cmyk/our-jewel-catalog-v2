@@ -1,86 +1,141 @@
-
 <div class="heading">
   <div>
-    <h1>Push Preview</h1>
+    <h1>Shopify Push Preview</h1>
+
     <p class="muted">
-      Review proposed Shopify product information.
-      Nothing is published.
+      Review your selected supplier products before
+      sending them to Shopify.
     </p>
   </div>
-  <span class="pill">READ ONLY</span>
+
+  <span class="pill">PREVIEW</span>
 </div>
 
 <p>
-  <%= @selected_skus.any? ? "Selected products" : "All products" %>:
+  Selected products:
   <strong><%= @previews.length %></strong>
 </p>
 
-<p class="muted">
-  Shopify prices and live SKU matching will be available
-  after Shopify integration.
-</p>
+<% if @previews.any? %>
 
-<div style="overflow-x:auto;">
-  <table>
-    <thead>
-      <tr>
-        <th>SKU</th>
-        <th>Product</th>
-        <th>Supplier Price</th>
-        <th>Shopify Price</th>
-        <th>Proposed Price</th>
-        <th>Inventory</th>
-        <th>Photos</th>
-      </tr>
-    </thead>
+  <%= form_with url: publish_products_path,
+                method: :post,
+                data: {
+                  turbo: false,
+                  controller: "push-confirm"
+                } do %>
 
-    <tbody>
-      <% @previews.each do |item| %>
-        <% product = item[:product] %>
-        <% preview = item[:preview] %>
+    <%= hidden_field_tag :preview_token, @preview_token %>
 
-        <tr>
-          <td><%= product.stock_no %></td>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>SKU</th>
+            <th>Product</th>
+            <th>Supplier Price</th>
+            <th>Shopify Push Price</th>
+            <th>Inventory</th>
+            <th>Photos</th>
+          </tr>
+        </thead>
 
-          <td>
-            <strong><%= preview[:title] %></strong>
-            <br>
-            <small class="muted">
-              <%= preview[:vendor] %>
-            </small>
-          </td>
+        <tbody>
+          <% @previews.each do |item| %>
+            <% product = item[:product] %>
+            <% preview = item[:preview] %>
 
-          <td>
-            <%= product.supplier_price ?
-                number_to_currency(product.supplier_price) :
-                "N/A" %>
-          </td>
+            <tr>
+              <td>
+                <%= check_box_tag "skus[]",
+                      product.stock_no,
+                      preview[:price].present?,
+                      disabled: preview[:price].nil?,
+                      class: "push-checkbox" %>
+              </td>
 
-          <td>
-            <span class="muted">Not connected</span>
-          </td>
+              <td>
+                <strong><%= product.stock_no %></strong>
+              </td>
 
-          <td>
-            <strong>
-              <%= preview[:price] ?
-                  number_to_currency(preview[:price]) :
-                  "N/A" %>
-            </strong>
-          </td>
+              <td>
+                <strong><%= preview[:title] %></strong>
 
-          <td><%= preview[:inventory] %></td>
+                <br>
 
-          <td><%= preview[:photos].length %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+                <small class="muted">
+                  <%= preview[:vendor] %>
+                </small>
+              </td>
 
-<% if @previews.empty? %>
-  <p>No matching products found.</p>
+              <td>
+                <%= product.supplier_price ?
+                      number_to_currency(product.supplier_price) :
+                      "N/A" %>
+              </td>
+
+              <td>
+                <strong>
+                  <%= preview[:price] ?
+                        number_to_currency(preview[:price]) :
+                        "N/A" %>
+                </strong>
+              </td>
+
+              <td>
+                <%= preview[:inventory] %>
+              </td>
+
+              <td>
+                <%= preview[:photos].length %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:24px;">
+      <p>
+        <strong>Confirmation required</strong>
+      </p>
+
+      <p class="muted">
+        Shopify will receive the selected products
+        with their calculated selling prices,
+        SKUs, supplier photos, and stock quantities.
+        Existing SKUs will be skipped.
+      </p>
+
+      <label style="display:block; margin-bottom:16px;">
+        <input type="checkbox"
+               id="confirm-shopify-push"
+               required>
+
+        I have reviewed the product details and
+        authorize sending these products to Shopify.
+      </label>
+
+      <button type="submit"
+              class="button"
+              data-push-confirm-target="button">
+        Confirm & Push to Shopify
+      </button>
+
+      <%= link_to "Cancel",
+            root_path,
+            class: "button secondary" %>
+    </div>
+
+  <% end %>
+
+<% else %>
+
+  <p>No products selected. Return to the catalog and select products.</p>
+
+  <%= link_to "Back to Catalog",
+        root_path,
+        class: "button" %>
+
 <% end %>
-
-<p>
-  <%= link_to "Back to Catalog", root_path, class: "button" %>
-</p>
