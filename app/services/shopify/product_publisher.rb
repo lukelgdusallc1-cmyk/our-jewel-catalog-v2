@@ -46,25 +46,27 @@ module Shopify
 
         raise PublishError, "Default variant missing" unless variant
 
-        update_variant(
+        updated_variant = update_variant(
           product_id: product_id,
           variant_id: variant.fetch("id"),
           preview: preview
         )
 
-        quantity = preview[:inventory].to_i
-        inventory_item_id = variant["inventoryItem"]["id"]
+        inventory_item = updated_variant.fetch("inventoryItem")
 
-        if inventory_item_id.present?
-          inventory_item_id = refresh_inventory_item(
-            product_id: product_id
-          )
-
-          set_inventory(
-            inventory_item_id: inventory_item_id,
-            quantity: quantity
-          )
+        unless inventory_item["tracked"]
+          raise PublishError, "Inventory tracking was not enabled"
         end
+
+        inventory_item_id = inventory_item.fetch("id")
+        quantity = preview[:inventory].to_i
+
+        raise PublishError, "Invalid inventory quantity" if quantity.negative?
+
+        set_inventory(
+          inventory_item_id: inventory_item_id,
+          quantity: quantity
+        )
 
         activate_product(product_id)
 
@@ -233,8 +235,12 @@ module Shopify
           ) {
             productVariants {
               id
-              sku
               price
+              inventoryItem {
+                id
+                sku
+                tracked
+              }
             }
             userErrors {
               field
@@ -247,9 +253,9 @@ module Shopify
       variants = [
         {
           id: variant_id,
-          sku: preview[:stock_no].to_s,
           price: preview[:price].to_d.to_s("F"),
           inventoryItem: {
+            sku: preview[:stock_no].to_s,
             tracked: true
           }
         }
@@ -263,7 +269,18 @@ module Shopify
         }
       )
 
-      mutation_result(data, "productVariantsBulkUpdate")
+      result = mutation_result(
+        data,
+        "productVariantsBulkUpdate"
+      )
+
+      updated_variant = result.fetch("productVariants").first
+
+      unless updated_variant
+        raise PublishError, "Shopify variant update returned no variant"
+      end
+
+      updated_variant
     end
 
     def refresh_inventory_item(product_id:)
