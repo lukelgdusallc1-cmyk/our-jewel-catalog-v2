@@ -17,7 +17,7 @@ class CatalogController < ApplicationController
     end
 
     @count = @products.count
-    @products = @products.limit(250)
+    @products = @products.limit(500)
 
     @shopify_skus = nil
 
